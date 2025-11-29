@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-g" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>mc20000 - About Me & Portfolio (Liquid Glass)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- 1. Load Lucide icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* --- 0. Variables & Globals --- */
+:root{
+  /* Theming */
+  --bg-color: #121212;
+  --text-color: #eee;
+  --text-fade: rgba(255,255,255,0.85);
+  --accent-color: #55aaff; /* A bright accent for titles/links */
+  --accent-glow: rgba(85, 170, 255, 0.2);
+
+  /* Glass Properties (Adjusted for darker, more subtle effect) */
+  --card-bg: rgba(255,255,255,0.02); /* Darker background base */
+  --card-border: rgba(255,255,255,0.05); /* Lighter border */
+  --shadow: rgba(0,0,0,0.65);
+  --blur-strength: 18px;
+  --glow-opacity: 0.5; /* Reduced overall glow visibility */
+}
+
+/* basics */
+*, *::before, *::after{box-sizing:border-box}
+html{ scroll-behavior: smooth; }
+body{
+  margin:0;
+  font-family:'Inter', Arial, Helvetica, sans-serif;
+  background:var(--bg-color);
+  color:var(--text-color);
+  line-height:1.6;
+}
+.container{
+  max-width:960px;
+  margin:40px auto;
+  padding:0 18px;
+  display:grid;
+  gap:40px; /* Increased gap between sections */
+}
+header{
+  text-align:center;
+  padding:20px 0 0 0;
+  font-weight:700;
+  letter-spacing:0.8px;
+}
+h1{ font-size: 2.2rem; margin-bottom: 24px; }
+h2{ font-size: 1.6rem; }
+/* Section Headers */
+h3{
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--accent-color);
+  text-shadow: 0 0 15px var(--accent-glow);
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+h4{ font-size: 1.1rem; }
+a{ color: var(--accent-color); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+/* --- 1. Animations (Slower Speeds) --- */
+@keyframes liquidFlow {
+  0%{ background-position:0% 0% }
+  50%{ background-position:130% 160% }
+  100%{ background-position:0% 0% }
+}
+@keyframes glassWaves {
+  0%{ transform:translate(-5%, -5%) scale(1.05) }
+  50%{ transform:translate(5%, 5%) scale(1.12) }
+  100%{ transform:translate(-5%, -5%) scale(1.05) }
+}
+@keyframes buttonPulse {
+  0%, 100%{ transform: scale(1); box-shadow: 0 12px 30px var(--shadow); }
+  50%{ transform: scale(1.05); box-shadow: 0 16px 40px var(--shadow); }
+}
+
+/* --- 2. Card Base & Glass Effect --- */
+.card-style{
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  padding:24px; /* Increased padding */
+  border:1px solid var(--card-border);
+  background:var(--card-bg);
+  /* This is key for stacking pseudo-elements correctly */
+  isolation: isolate; 
+  backdrop-filter: blur(var(--blur-strength)) saturate(1.18) contrast(1.05);
+  box-shadow:
+    inset 0 0 40px var(--card-bg),
+    inset 0 10px 20px rgba(255,255,255,0.03), /* Reduced inset glow */
+    0 12px 30px var(--shadow);
+  transition:transform .2s ease, box-shadow .2s ease, filter .2s ease;
+}
+/* This div holds the card's actual content */
+.card-content {
+  position: relative;
+  z-index: 1; /* Content sits *above* the glare/liquid */
+}
+
+.card-style:hover{
+  transform:translateY(-8px) scale(1.01);
+  filter:brightness(1.1);
+  box-shadow:0 24px 60px rgba(0,0,0,0.7);
+}
+
+/* MAIN REFRACTIVE LIQUID SHEET (::after) */
+.card-style::after{
+  content:"";
+  position:absolute;
+  inset:-55%;
+  z-index: -1;
+  background-image:
+    /* Reduced opacities here for less distraction */
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.01) 60%, transparent 100%),
+    linear-gradient(75deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02), rgba(255,255,255,0.12)),
+    var(--bg-img, linear-gradient(transparent,transparent));
+
+  background-blend-mode: screen, overlay, normal;
+  background-size: 250% 250%, 350% 350%, cover;
+  background-position:center;
+  mix-blend-mode: lighten;
+  filter: blur(22px) brightness(1.1) saturate(1.1); /* Reduced brightness/saturation */
+  opacity:var(--glow-opacity);
+  /* Slower animations */
+  animation: liquidFlow 12s linear infinite, glassWaves 16s ease-in-out infinite; 
+  pointer-events:none;
+}
+
+/* SMALL CAUSTIC SPARKLES (::before) */
+.card-style::before{
+  content:"";
+  position:absolute;
+  inset:-50%;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,0.10), transparent 35%), /* Reduced sparkle opacity */
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.07), transparent 40%), /* Reduced sparkle opacity */
+    radial-gradient(circle at 40% 85%, rgba(255,255,255,0.05), transparent 45%); /* Reduced sparkle opacity */
+  filter: blur(28px) saturate(1.2); /* Reduced saturation */
+  opacity:0.5; /* Reduced overall sparkle visibility */
+  pointer-events:none;
+}
+
+/* thin moving highlight sheet */
+.glare{
+  position:absolute;
+  top:-50%; left:-50%;
+  width:200%; height:200%;
+  background:rgba(255,255,255,0.10); /* Reduced glare opacity */
+  transform:rotate(45deg);
+  mix-blend-mode:screen;
+  opacity:0.4; /* Reduced overall glare visibility */
+  transition:opacity .15s linear;
+  pointer-events:none;
+  z-index: 2; /* Glare sits on top of content */
+}
+
+/* --- 3. NEW Navigation Bar --- */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+.nav-link {
+  /* Use the card-style, but smaller! */
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  padding: 10px 20px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px) saturate(1.1);
+  box-shadow: 0 4px 15px var(--shadow);
+  color: var(--text-fade);
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.nav-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px var(--shadow);
+  color: #fff;
+  text-decoration: none;
+}
+
+/* --- 4. Section Layouts --- */
+
+/* NEW About Hero Card */
+.about-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  text-align: center;
+}
+.about-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 30px var(--accent-glow);
+}
+.about-text h2, .about-text p{
+  margin: 0;
+}
+.about-text h2 { margin-bottom: 8px; }
+.about-text p{ color:var(--text-fade); max-width: 60ch; }
+
+/* Socials */
+.socials{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top: 20px;
+}
+.social-card{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 14px;
+  border-radius:14px;
+  text-decoration:none;
+  color:var(--text-color);
+  font-weight:600;
+  font-size:15px;
+  /* Re-using card style for consistency */
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease;
+}
+.social-card:hover {
+  transform: translateY(-4px);
+  text-decoration: none;
+}
+.social-card img{
+  width:24px;height:24px;border-radius:4px;object-fit:cover;
+}
+
+/* Language Cards */
+.langs-section{ display:flex; gap:30px; flex-wrap:wrap; margin-top:15px; }
+.langs-column{ min-width:250px; flex:1; }
+.langs{ display:flex; flex-direction:column; gap:12px; margin-top:10px; }
+.lang-card{
+  /* This is now an <a> tag styled as a card */
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border-radius:14px;
+  color: var(--text-color);
+  text-decoration: none;
+}
+.lang-card:hover { text-decoration: none; }
+.lang-card img{ width:36px;height:36px;border-radius:6px }
+.lang-card div { font-weight: 600; }
+
+/* NEW Portfolio Grid */
+.project-grid {
+  display: grid;
+  /* Creates responsive columns: 1 on small, 2-3 on larger */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+/* Each project is its own card */
+.project-card {
+  /* Using .card-style directly */
+  text-decoration: none;
+  color: var(--text-color);
+}
+.project-card:hover { text-decoration: none; }
+
+.project-card .card-content {
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Header, Image, Footer */
+  gap: 12px;
+  height: 100%;
+}
+.project-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.project-header div {
+  font-weight:700;
+  font-size: 1.1rem;
+}
+.project-header a {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.project-preview img{
+  display:block;
+  width:100%;
+  border-radius:10px;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.project-description {
+  font-size: 0.95rem;
+  color: var(--text-fade);
+  margin-top: 4px;
+}
+
+/* Floating Game Button */
+#gameButton{
+  position:fixed;
+  bottom:30px; right:30px;
+  width:68px;height:68px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  cursor:pointer;
+  z-index: 100;
+  border: none;
+  animation: buttonPulse 3s ease-in-out infinite;
+}
+#gameButton:hover{
+  transform: scale(1.1);
+  box-shadow: 0 16px 40px var(--shadow);
+}
+
+
+/* --- 5. Mobile Responsiveness --- */
+@media(max-width:720px){
+  .about-hero{ flex-direction:column; text-align:center; }
+  .langs-section{ flex-direction:column; gap:20px; }
+  .langs-column{ min-width: unset; }
+  #gameButton{ bottom: 18px; right: 18px; width: 56px; height: 56px; font-size: 20px; }
+  h1 { font-size: 1.8rem; }
+  h3 { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>mc20000 — About & Portfolio</h1>
+
+  <!-- NEW Glass Navigation Bar -->
+  <nav>
+    <a href="#about" class="nav-link">
+      <i data-lucide="user"></i> About Me
+    </a>
+    <a href="#languages" class="nav-link">
+      <i data-lucide="code"></i> Languages
+    </a>
+    <a href="#portfolio" class="nav-link">
+      <i data-lucide="layout-grid"></i> Portfolio
+    </a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- ABOUT / HOME SECTION (Replaced table with a Hero card) -->
+  <section id="about" class="about-hero card-style" style="--bg-img:url('https://uploads.scratch.mit.edu/get_image/user/85683138_32x32.png')">
+    <div class="glare"></div>
+    <div class="card-content">
+      <div class="about-avatar">
+        <img src="https://uploads.scratch.mit.edu/get_image/user/85683138_60x60.png" alt="mc20000 profile picture">
+      </div>
+      
+      <div class="about-text">
+        <h2>Hello! I'm mc20000</h2>
+        <p>I work with several languages and environments, and I’m always learning new skills. My focus is primarily on creative coding and game development platforms.</p>
+      </div>
+
+      <div class="socials">
+        <a class="social-card" href="https://github.com/mc20000-01" target="_blank">
+          <img src="https://github.githubassets.com/favicons/favicon.png" alt="GitHub icon"> GitHub
+        </a>
+        <a class="social-card" href="https://scratch.mit.edu/users/mc20000/" target="_blank">
+          <img src="https://scratch.mit.edu/favicon.ico" alt="Scratch icon"> Scratch
+        </a>
+        <a class="social-card" href="https://www.youtube.com/@mccodz-s5i5s" target="_blank">
+          <img src="https://www.shareicon.net/data/128x128/2015/09/24/106485_film_512x512.png" alt="YouTube icon"> YouTube
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANGUAGES SECTION -->
+  <section id="languages">
+    <h3><i data-lucide="layers"></i> Languages / Environments</h3>
+    <div class="langs-section">
+      <div class="langs-column">
+        <h4>Known / Primary</h4>
+        <div class="langs">
+          <a class="lang-card card-style" href="https://turbowarp.org/" target="_blank" style="--bg-img:url('https://turbowarp.org/favicon.ico')">
+            <div class="glare"></div>
+            <div class="card-content" style="display:flex; align-items:center; gap: 12px; padding: 0;">
+              <img src="https://turbowarp.org/favicon.ico" alt="TurboWarp icon"><div>TurboWarp</div>
+            </div>
+          </a>
+          <a class="lang-card card-style" href="https://scratch.mit.edu/" target="_blank" style="--bg-img:url('https://scratch.mit.edu/favicon.ico')">
+            <div class="glare"></div>
+            <div class="card-content" style="display:flex; align-items:center; gap: 12px; padding: 0;">
+              <img src="https://scratch.mit.edu/favicon.ico" alt="Scratch icon"><div>Scratch</div>
+            </div>
+          </a>
+          <a class="lang-card card-style" href="https://warp.mistium.com/" target="_blank" style="--bg-img:url('https://warp.mistium.com/favicon.ico')">
+            <div class="glare"></div>
+            <div class="card-content" style="display:flex; align-items:center; gap: 12px; padding: 0;">
+              <img src="https://warp.mistium.com/favicon.ico" alt="MistWarp icon"><div>MistWarp</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="langs-column">
+        <h4>Learning / Secondary</h4>
+        <div class="langs">
+          <a class="lang-card card-style" href="https://www.python.org/" target="_blank" style="--bg-img:url('https://www.python.org/static/favicon.ico')">
+            <div class="glare"></div>
+            <div class="card-content" style="display:flex; align-items:center; gap: 12px; padding: 0;">
+              <img src="https://www.python.org/static/favicon.ico" alt="Python icon"><div>Python</div>
+            </div>
+          </a>
+          <a class="lang-card card-style" href="#" style="--bg-img:url('https://avatars.githubusercontent.com/u/234122786?s=200&v=4')">
+            <div class="glare"></div>
+            <div class="card-content" style="display:flex; align-items:center; gap: 12px; padding: 0;">
+              <img src="https://avatars.githubusercontent.com/u/234122786?s=200&v=4" alt="OSL icon"><div>OSL</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO / PROJECTS SECTION (Converted to a Grid of Cards) -->
+  <section id="portfolio">
+    <h3><i data-lucide="sparkles"></i> Portfolio / Projects</h3>
+
+    <div class="project-grid">
+      
+      <!-- Project 1 Card -->
+      <a class="project-card card-style" href="https://scratch.mit.edu/projects/1129420261/" target="_blank" style="--bg-img:url('https://cdn2.scratch.mit.edu/get_image/project/1129420261_480x300.png')">
+        <div class="glare"></div>
+        <div class="card-content">
+          <div class="project-header">
+            <div>Lemon Share Vids</div>
+            <div>Open Project →</div>
+          </div>
+          <div class="project-preview">
+            <img src="https://cdn2.scratch.mit.edu/get_image/project/1129420261_480x360.png" alt="Preview of Lemon Share Vids project">
+          </div>
+          <div class="project-description">
+            /!\ broken rn /!\ a video sharing platform built in scratch
+          </div>
+        </div>
+      </a>
+
+      <!-- Removed Project 2 Card (Placeholder) -->
+
+      <!-- Removed Project 3 Card (Placeholder) -->
+
+    </div>
+  </section>
+
+</main>
+
+<button id="gameButton" class="card-style" title="Play a Game" style="--bg-img:url('https://cdn2.scratch.mit.edu/get_image/project/1129420261_480x360.png')">
+  <div class="glare"></div>
+  <div class="card-content" style="padding:0;">🎮</div>
+</button>
+
+<!-- 2. Activate Lucide icons -->
+<script>
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
