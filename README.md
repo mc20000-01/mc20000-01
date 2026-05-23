@@ -1,4 +1,4 @@
-a 13 year old dev who goes by sandisk and mc20000 online an Jamie in person
+a teen dev who goes by sandisk and mc20000 online an Jamie in person
 
 <p align="center">
   <a href="http://internetometer.com/give/51337">
